@@ -1,7 +1,13 @@
 <template>
-  <div class="container">
-    Google Map
-    <div class="google-map" id="allmap"></div>
+  <div class="map-container">
+    <div class="google-map" id="allmap">
+      <GmapMap
+        :center="{lat: lat, lng: lng}"
+        :zoom="zoom"
+        map-type-id="terrain"
+        style="width: 100%; height: 100%"
+      ></GmapMap>
+    </div>
   </div>
 </template>
 
@@ -15,8 +21,9 @@ export default {
   data() {
     return {
       map: null,
-      lat: 35.6048718,
-      lng: 139.6738334
+      lat: 35.6055588,
+      lng: 139.6838682,
+      zoom: 16
     }
   },
   mounted() {
@@ -26,7 +33,7 @@ export default {
     initMap() {
       this.map = new google.maps.Map(document,getElementById("allmap"), {
         center: {lat: this.lat, lng: this.lng},
-        zoom: 16,
+        zoom: this.zoom,
         maxZoom: 18,
         minZoom: 10
       })
@@ -36,8 +43,13 @@ export default {
 </script>
 
 <style scoped>
+.map-container {
+  margin-left: 0px;
+}
 .google-map {
   width: 100%;
-  height: 600px;
+  height: 700px;
+  margin-left: 0%;
+  margin-bottom: 0%;
 }
 </style>
