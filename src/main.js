@@ -21,6 +21,7 @@ Vue.use(VueGoogleMaps, {
 Vue.use(vuetify);
 
 new Vue({
+  el: "#app",
   router,
   vuetify,
   render: h => h(App)
