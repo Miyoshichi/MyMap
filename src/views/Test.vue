@@ -1,9 +1,11 @@
 <template>
   <v-app id="inspire">
+
+    <!-- Navigation drawer on the left -->
     <v-navigation-drawer
       v-model="drawer"
       app
-      clipped
+      temporary
     >
       <v-list dense>
         <v-list-item
@@ -54,16 +56,19 @@
       </v-list>
     </v-navigation-drawer>
 
+    <!-- Bar on the top -->
+    <!--
     <v-app-bar
       app
+      elevation="0"
       clipped-left
-      color="red"
+      color="rgba(0, 0, 0, 0.25)"
       dense
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-icon class="mx-4">fab fa-youtube</v-icon>
+      <v-icon class="mx-4">fas fa-map</v-icon>
       <v-toolbar-title class="mr-12 align-center">
-        <span class="title">Youtube</span>
+        <span class="title">MyMap</span>
       </v-toolbar-title>
       <v-spacer />
       <v-row
@@ -80,48 +85,87 @@
         />
       </v-row>
     </v-app-bar>
-
-    <v-content>
-      <v-container class="fill-height">
-        <v-row
-          justify="center"
-          align="center"
+    -->
+    <v-app-bar
+      class="bar"
+      app
+      elevation="0"
+      clipped-left
+      color="rgba(0, 0, 0, 0)"
+      dense
+    >
+      <v-card
+        color="rgba(0, 0, 0, 0)"
+      >
+        <v-toolbar
+          dense
+          light
         >
-          <v-col class="shrink">
-            <v-tooltip right>
-              <template v-slot:activator="{ on }">
-                <v-btn
-                  :href="source"
-                  icon
-                  large
-                  target="_blank"
-                  v-on="on"
-                >
-                  <v-icon large>mdi-code-tags</v-icon>
-                </v-btn>
-              </template>
-              <span>Source</span>
-            </v-tooltip>
-            <v-tooltip right>
-              <template v-slot:activator="{ on }">
-                <v-btn
-                  icon
-                  large
-                  href="https://codepen.io/johnjleider/pen/aezMOO"
-                  target="_blank"
-                  v-on="on"
-                >
-                  <v-icon large>mdi-codepen</v-icon>
-                </v-btn>
-              </template>
-              <span>Codepen</span>
-            </v-tooltip>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-content>
+          <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+          <v-text-field
+            solo
+            flat
+            placeholder="Search the place"
+            hide-details
+            append-icon="search"
+            single-line
+          ></v-text-field>
+          <v-divider
+            inset
+            vertical>
+          </v-divider>
+          <v-btn icon>
+            <v-icon>my_location</v-icon>
+          </v-btn>
+        </v-toolbar>
+      </v-card>
+    </v-app-bar>
+
+    <!-- Cavas of the map -->
+    <v-card
+      class="map"
+      id="allmap"
+      color="rgba(255, 255, 255, 0)"
+      flat
+      tile
+    ></v-card>
+
+    <!-- Floating button for upping -->
+    <v-footer
+      app
+      class="bar"
+      height="72px"
+      elevation="0"
+      color="rgba(0, 0, 0, 0)"
+    >
+      <v-speed-dial
+        v-model="fab"
+        absolute
+        right
+        bottom
+        direction="top"
+        transition="slide-y-reverse-transition"
+      >
+        <template v-slot:activator>
+          <v-btn
+            v-model="fab"
+            color="pink lighten-2"
+            dark
+            fab
+          >
+            <v-icon v-if="fab">fas fa-times</v-icon>
+            <v-icon v-else>fas fa-feather</v-icon>
+          </v-btn>
+        </template>
+      </v-speed-dial>
+    </v-footer>
+
   </v-app>
 </template>
+
+<script async defer
+  src="https://maps.googleapis.com/maps/api/js?key=${process.env.VUE_APP_GMAPS_API_KEY}&callback=initMap">
+</script>
 
 <script>
   export default {
@@ -144,9 +188,65 @@
         { picture: 58, text: 'Nokia' },
         { picture: 78, text: 'MKBHD' },
       ],
+      map: null,
+      lat: 35.6055588,
+      lng: 139.6838682,
+      zoom: 16,
+      maxZoom: 18,
+      minZoom: 10
     }),
+    mounted() {
+      try {
+        this.initMap()
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    methods: {
+      initMap() {
+        this.map = new google.maps.Map(document.getElementById("allmap"), {
+          center: {lat: this.lat, lng: this.lng},
+          zoom: this.zoom,
+          maxZoom: this.maxZoom,
+          minZoom: this.minZoom,
+          mapTypeControl: false,
+          fullscreenControl: false,
+          zoomControlOptions: {
+            position: google.maps.ControlPosition.LEFT_BOTTOM
+          },
+          streetViewControlOptions: {
+            position: google.maps.ControlPosition.LEFT_BOTTOM
+          }
+        })
+      }
+    },
     created () {
-      this.$vuetify.theme.dark = true
+      this.$vuetify.theme.dark = false
     },
   }
 </script>
+
+<style scoped>
+html,
+body {
+  margin: 0;
+  padding: 0
+}
+.bar {
+  margin: 0;
+  padding-top: 15px;
+  padding-bottom: 15px
+}
+.map {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0
+}
+#create .v-speed-dial {
+  position: absolute;
+}
+#create .v-btn--floating {
+  position: relative;
+}
+</style>
