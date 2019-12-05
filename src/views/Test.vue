@@ -57,71 +57,97 @@
     </v-navigation-drawer>
 
     <!-- Bar on the top -->
-    <!--
-    <v-app-bar
-      app
-      elevation="0"
-      clipped-left
-      color="rgba(0, 0, 0, 0.25)"
-      dense
-    >
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-icon class="mx-4">fas fa-map</v-icon>
-      <v-toolbar-title class="mr-12 align-center">
-        <span class="title">MyMap</span>
-      </v-toolbar-title>
-      <v-spacer />
-      <v-row
-        align="center"
-        style="max-width: 650px"
+    <!-- For mobile devices -->
+    <template v-if="isMobile == true">
+      <v-app-bar
+        class="mobileBar"
+        app
+        height="60px"
+        elevation="0"
+        clipped-left
+        color="rgba(255, 255, 255, 0.75)"
       >
-        <v-text-field
-          :append-icon-cb="() => {}"
-          placeholder="Search..."
-          single-line
-          append-icon="search"
-          color="white"
-          hide-details
-        />
-      </v-row>
-    </v-app-bar>
-    -->
-    <v-app-bar
-      class="bar"
-      app
-      elevation="0"
-      clipped-left
-      color="rgba(255, 0, 0, 0)"
-      dense
-    >
-      <v-card
-        v-bind:class="{ mobile: isMobile }"
-        color="rgba(0, 255, 0, 0.5)"
-      >
-        <v-toolbar
-          v-bind:class="{ mobile: isMobile }"
-          dense
-          light
+        <v-card
+          class="mobileToolBar"
+          outlined
+          height="45px"
         >
-          <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-          <v-text-field
-            solo
+          <v-toolbar 
+            lass="mobileToolBar"
             flat
-            placeholder="Search the place"
-            hide-details
-            append-icon="search"
-            single-line
-          ></v-text-field>
-          <v-divider
-            inset
-            vertical>
-          </v-divider>
-          <v-btn icon>
-            <v-icon>my_location</v-icon>
+            dense
+            color="rgba(255, 0, 255, 0)"
+          >
+            <v-app-bar-nav-icon small @click.stop="drawer = !drawer" />
+            <v-btn icon small>
+              <v-icon>my_location</v-icon>
+            </v-btn>
+            <v-text-field
+              solo
+              flat
+              placeholder="Search the place"
+              single-line
+              hide-details
+              dense
+            />
+            <v-btn icon small>
+              <v-icon>fas fa-user-circle</v-icon>
+            </v-btn>
+          </v-toolbar>
+        </v-card>
+      </v-app-bar>
+    </template>
+    <!-- For desktop and tablet devices -->
+    <template v-else>
+      <v-app-bar
+        class="bar"
+        app
+        elevation="0"
+        clipped-left
+        color="rgba(255, 0, 0, 0)"
+        dense
+      >
+        <v-card
+          color="rgba(0, 255, 0, 0)"
+        >
+          <v-toolbar
+            dense
+            light
+          >
+            <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+            <v-text-field
+              solo
+              flat
+              placeholder="Search the place"
+              hide-details
+              append-icon="search"
+              single-line
+            />
+            <v-divider
+              inset
+              vertical>
+            </v-divider>
+            <v-btn icon>
+              <v-icon>my_location</v-icon>
+            </v-btn>
+          </v-toolbar>
+        </v-card>
+        <v-spacer />
+        <!-- Login or user button -->
+        <template v-if="1">
+          <v-btn
+            color="primary"
+            large
+            @click="login"
+          >Login</v-btn>
+        </template>
+        <template v-else>
+          <v-btn icon large color="pink">
+            <v-icon>fas fa-user-circle</v-icon>
           </v-btn>
-        </v-toolbar>
-      </v-card>
-    </v-app-bar>
+        </template>
+      </v-app-bar>
+    </template>
 
     <!-- Cavas of the map -->
     <v-card
@@ -130,7 +156,7 @@
       color="rgba(255, 255, 255, 1)"
       flat
       tile
-    ></v-card>
+    />
 
     <!-- Floating button for upping -->
     <v-footer
@@ -210,7 +236,7 @@
       } else {
         this.isMobile = false
       }
-      console.log(this.isMobile)
+      // console.log(this.isMobile)
     },
     methods: {
       initMap() {
@@ -221,27 +247,33 @@
           minZoom: this.minZoom,
           mapTypeControl: false,
           fullscreenControl: false,
+          zoomControl:false,
           zoomControlOptions: {
             position: google.maps.ControlPosition.LEFT_BOTTOM
           },
+          streetViewControl: false,
           streetViewControlOptions: {
             position: google.maps.ControlPosition.LEFT_BOTTOM
           }
         })
       },
       whichTypeOfDevice() {
-        console.log('executed')
+        // console.log('executed')
         var isMobile = null
         if (device.type == "mobile") {
-          console.log('if')
+          // console.log('if')
           isMobile = true
-          console.log('if is executed')
+          // console.log('if is executed')
         } else {
-          console.log('else')
+          // console.log('else')
           isMobile = false
-          console.log('else is executed')
+          // console.log('else is executed')
         }
         return isMobile
+      },
+      login: function() {
+        this.$router.replace('/about')
+        console.log('replaced')
       }
     },
     created () {
@@ -261,9 +293,15 @@ body {
   padding-top: 15px;
   padding-bottom: 15px
 }
-.mobile {
+.mobileBar {
   width: 100vw;
-  margin: 0px
+  margin: 0;
+  padding: 0
+}
+.mobileToolBar {
+  width: 100vw;
+  margin: 0;
+  padding: 0
 }
 .map {
   width: 100vw;
