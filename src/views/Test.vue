@@ -91,13 +91,15 @@
       app
       elevation="0"
       clipped-left
-      color="rgba(0, 0, 0, 0)"
+      color="rgba(255, 0, 0, 0)"
       dense
     >
       <v-card
-        color="rgba(0, 0, 0, 0)"
+        v-bind:class="{ mobile: isMobile }"
+        color="rgba(0, 255, 0, 0.5)"
       >
         <v-toolbar
+          v-bind:class="{ mobile: isMobile }"
           dense
           light
         >
@@ -125,7 +127,7 @@
     <v-card
       class="map"
       id="allmap"
-      color="rgba(255, 255, 255, 0)"
+      color="rgba(255, 255, 255, 1)"
       flat
       tile
     ></v-card>
@@ -188,6 +190,7 @@
         { picture: 58, text: 'Nokia' },
         { picture: 78, text: 'MKBHD' },
       ],
+      isMobile: null,
       map: null,
       lat: 35.6055588,
       lng: 139.6838682,
@@ -201,6 +204,13 @@
       } catch (error) {
         console.error(error)
       }
+      console.log(device.type)
+      if(this.whichTypeOfDevice()) {
+        this.isMobile = true
+      } else {
+        this.isMobile = false
+      }
+      console.log(this.isMobile)
     },
     methods: {
       initMap() {
@@ -218,6 +228,20 @@
             position: google.maps.ControlPosition.LEFT_BOTTOM
           }
         })
+      },
+      whichTypeOfDevice() {
+        console.log('executed')
+        var isMobile = null
+        if (device.type == "mobile") {
+          console.log('if')
+          isMobile = true
+          console.log('if is executed')
+        } else {
+          console.log('else')
+          isMobile = false
+          console.log('else is executed')
+        }
+        return isMobile
       }
     },
     created () {
@@ -236,6 +260,10 @@ body {
   margin: 0;
   padding-top: 15px;
   padding-bottom: 15px
+}
+.mobile {
+  width: 100vw;
+  margin: 0px
 }
 .map {
   width: 100vw;
