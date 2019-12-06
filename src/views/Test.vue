@@ -134,17 +134,39 @@
         </v-card>
         <v-spacer />
         <!-- Login or user button -->
-        <template v-if="1">
+        <!-- Not login -->
+        <template v-if="debug == false">
           <v-btn
             color="primary"
             large
             @click="login"
           >Login</v-btn>
         </template>
+        <!-- Logged in -->
         <template v-else>
-          <v-btn icon large color="pink">
-            <v-icon>fas fa-user-circle</v-icon>
-          </v-btn>
+          <v-menu
+            close-on-click
+            offset-y
+            transition="slide-y-transition"
+            bottom
+            nudge-bottom="15px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-btn
+                icon
+                large
+                color="pink"
+                v-on="on"
+              >
+                <v-icon>fas fa-user-circle</v-icon>
+              </v-btn>
+            </template>
+            <v-card
+              width="400px"
+              height="200px"
+            >email
+            </v-card>
+          </v-menu>
         </template>
       </v-app-bar>
     </template>
@@ -185,6 +207,22 @@
             <v-icon v-else>fas fa-feather</v-icon>
           </v-btn>
         </template>
+        <v-btn
+          fab
+          dark
+          small
+          color="orange"
+        >
+          <v-icon>fas fa-images</v-icon>
+        </v-btn>
+        <v-btn
+          fab
+          dark
+          small
+          color="purple"
+        >
+          <v-icon>fas fa-newspaper</v-icon>
+        </v-btn>
       </v-speed-dial>
     </v-footer>
 
@@ -216,8 +254,10 @@
         { picture: 58, text: 'Nokia' },
         { picture: 78, text: 'MKBHD' },
       ],
+      debug: true,
       isMobile: null,
       map: null,
+      fab: false,
       lat: 35.6055588,
       lng: 139.6838682,
       zoom: 16,
