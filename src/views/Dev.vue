@@ -195,8 +195,16 @@
         </v-card>
         <v-spacer />
         <!-- Login or user button -->
+        <!-- Not login -->
+        <template v-if="debug == false">
+          <v-btn
+            color="orange"
+            large
+            @click="signIn"
+          >Sign In</v-btn>
+        </template>
         <!-- Logged in -->
-        <template v-if="user != 'default'">
+        <template v-else>
           <v-menu
             close-on-click
             offset-y
@@ -218,7 +226,7 @@
               class="loginCard"
             >
               <h3>You has been logged in as</h3>
-              <p>: {{ user }}</p>
+              <p>email</p>
               <v-btn
                 color="amber"
                 @click="signOut"
@@ -227,14 +235,6 @@
               </v-btn>
             </v-card>
           </v-menu>
-        </template>
-        <!-- Not login -->
-        <template v-else>
-          <v-btn
-            color="orange"
-            large
-            @click="signIn"
-          >Sign In</v-btn>
         </template>
       </v-app-bar>
     </template>
@@ -302,104 +302,92 @@
 </script>
 
 <script>
-import firebase from 'firebase'
-
-export default {
-  props: {
-    source: String,
-  },
-  data: () => ({
-    drawer: null,
-    recommandations: [
-      {color: 'orange', ganre: 'Restaurants', icon: 'fas fa-utensils', dark: true},
-      {color: 'brown', ganre: 'Coffee', icon: 'fas fa-coffee', dark: true},
-      {color: 'blue-grey', ganre: 'Cinemas', icon: 'fas fa-video', dark: true},
-      {color: 'green', ganre: 'Parks', icon: 'fas fa-tree', dark: true},
-      {color: '', ganre: 'More...', icon: 'fas fa-ellipsis-h', dark: false},
-    ],
-    groups: [
-      {name: 'Mitsubishi', id: 36},
-      {name: 'Mitsui', id: 63},
-      {name: 'Mizuho', id: 27},
-      {name: 'Resona', id: 72},
-      {name: 'More...', icon: 'fas fa-ellipsis-h'}
-    ],
-    debug: false,
-    user: 'default',
-    //user: firebase.auth().currentUser.username,
-    isMobile: null,
-    map: null,
-    fab: false,
-    lat: 35.6055588,
-    lng: 139.6838682,
-    zoom: 16,
-    maxZoom: 18,
-    minZoom: 10
-  }),
-  mounted() {
-    try {
-      this.initMap()
-    } catch (error) {
-      console.error(error)
-    }
-    console.log(this.user)
-    console.log(device.type)
-    if(this.whichTypeOfDevice()) {
-      this.isMobile = true
-    } else {
-      this.isMobile = false
-    }
-    // console.log(this.isMobile)
-  },
-  created() {
-    this.user = this.$route.query.id
-  },
-  methods: {
-    initMap() {
-      this.map = new google.maps.Map(document.getElementById("allmap"), {
-        center: {lat: this.lat, lng: this.lng},
-        zoom: this.zoom,
-        maxZoom: this.maxZoom,
-        minZoom: this.minZoom,
-        mapTypeControl: false,
-        fullscreenControl: false,
-        zoomControl:false,
-        zoomControlOptions: {
-          position: google.maps.ControlPosition.LEFT_BOTTOM
-        },
-        streetViewControl: false,
-        streetViewControlOptions: {
-          position: google.maps.ControlPosition.LEFT_BOTTOM
-        }
-      })
+  export default {
+    props: {
+      source: String,
     },
-    whichTypeOfDevice() {
-      // console.log('executed')
-      var isMobile = null
-      if (device.type == "mobile") {
-        // console.log('if')
-        isMobile = true
-        // console.log('if is executed')
-      } else {
-        // console.log('else')
-        isMobile = false
-        // console.log('else is executed')
+    data: () => ({
+      drawer: null,
+      recommandations: [
+        {color: 'orange', ganre: 'Restaurants', icon: 'fas fa-utensils', dark: true},
+        {color: 'brown', ganre: 'Coffee', icon: 'fas fa-coffee', dark: true},
+        {color: 'blue-grey', ganre: 'Cinemas', icon: 'fas fa-video', dark: true},
+        {color: 'green', ganre: 'Parks', icon: 'fas fa-tree', dark: true},
+        {color: '', ganre: 'More...', icon: 'fas fa-ellipsis-h', dark: false},
+      ],
+      groups: [
+        {name: 'Mitsubishi', id: 36},
+        {name: 'Mitsui', id: 63},
+        {name: 'Mizuho', id: 27},
+        {name: 'Resona', id: 72},
+        {name: 'More...', icon: 'fas fa-ellipsis-h'}
+      ],
+      debug: false,
+      isMobile: null,
+      map: null,
+      fab: false,
+      lat: 35.6055588,
+      lng: 139.6838682,
+      zoom: 16,
+      maxZoom: 18,
+      minZoom: 10
+    }),
+    mounted() {
+      try {
+        this.initMap()
+      } catch (error) {
+        console.error(error)
       }
-      return isMobile
+      console.log(device.type)
+      if(this.whichTypeOfDevice()) {
+        this.isMobile = true
+      } else {
+        this.isMobile = false
+      }
+      // console.log(this.isMobile)
     },
-    signIn: function() {
-      this.$router.push('/signin')
-      // console.log('replaced')
+    methods: {
+      initMap() {
+        this.map = new google.maps.Map(document.getElementById("allmap"), {
+          center: {lat: this.lat, lng: this.lng},
+          zoom: this.zoom,
+          maxZoom: this.maxZoom,
+          minZoom: this.minZoom,
+          mapTypeControl: false,
+          fullscreenControl: false,
+          zoomControl:false,
+          zoomControlOptions: {
+            position: google.maps.ControlPosition.LEFT_BOTTOM
+          },
+          streetViewControl: false,
+          streetViewControlOptions: {
+            position: google.maps.ControlPosition.LEFT_BOTTOM
+          }
+        })
+      },
+      whichTypeOfDevice() {
+        // console.log('executed')
+        var isMobile = null
+        if (device.type == "mobile") {
+          // console.log('if')
+          isMobile = true
+          // console.log('if is executed')
+        } else {
+          // console.log('else')
+          isMobile = false
+          // console.log('else is executed')
+        }
+        return isMobile
+      },
+      signIn: function() {
+        this.$router.replace('/SignIn')
+        console.log('replaced')
+      }
     },
-    signOut: function() {
-      firebase.auth().signOut()
-      this.$router.replace('/')
-    }
-  },
-  created () {
-    this.$vuetify.theme.dark = false
-  },
-}
+    created () {
+      this.$vuetify.theme.dark = false
+    },
+  }
 </script>
 
 <style scoped>

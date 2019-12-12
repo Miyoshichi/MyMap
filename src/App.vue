@@ -1,23 +1,21 @@
 <template>
-  <div id="app">
+  <v-app id="app">
+    <!--
     <div id="nav">
-      <!--
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
-      -->
     </div>
+    -->
     <router-view/>
-  </div>
+  </v-app>
 </template>
 
 <script async defer
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB85tjhl9s8iy04nKQRRh3qswN9h7GXJ4E&callback=initMap">
+  src="https://maps.googleapis.com/maps/api/js?key=${process.env.VUE_APP_GMAPS_API_KEY}&callback=initMap">
 </script>
 
 <script>
-export default {
-  
-}
+export default { }
 </script>
 
 <style>
