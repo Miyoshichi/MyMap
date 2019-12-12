@@ -4,56 +4,117 @@
     <!-- Navigation drawer on the left -->
     <v-navigation-drawer
       v-model="drawer"
+      class="navigation"
       app
+      roun
       temporary
     >
-      <v-list dense>
-        <v-list-item
-          v-for="item in items"
-          :key="item.text"
-          link
-        >
-          <v-list-item-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-action>
+      <v-list rounded>
+
+        <v-list-item>
+          <v-img
+            :src="require('../../public/logo_hd.png')"
+            alt="logo"
+            max-height="50"
+            max-width="200"
+          ></v-img>
+        </v-list-item>
+        <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>
-              {{ item.text }}
+            <v-list-item-title class="title">
+              MyMap
             </v-list-item-title>
+            <v-list-item-subtitle class="subtitle">
+              Places recorded for you.
+            </v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
-        <v-subheader class="mt-4 grey--text text--darken-1">SUBSCRIPTIONS</v-subheader>
-        <v-list>
+        <v-divider></v-divider>
+        <v-list-item>
+          <v-list-item-icon>
+            <v-icon>fas fa-home</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>
+            Home
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-group
+          color="orange darken-4"
+          prepend-icon="fas fa-star"
+          no-action
+          value="true"
+        >
+          <template v-slot:activator>
+            <v-list-item-title>
+              Recommand
+            </v-list-item-title>
+          </template>
           <v-list-item
-            v-for="item in items2"
-            :key="item.text"
+            v-for="item in recommandations"
+            :key="item.ganre"
+            class=""
             link
+            dense
           >
+            <v-list-item-title v-text="item.ganre" />
+            <v-list-item-avatar :color="item.color">
+              <v-icon :dark="item.dark" small>{{ item.icon }}</v-icon>
+            </v-list-item-avatar>
+          </v-list-item>
+          <!--
+          <v-list-item-icon>
+            <v-btn icon v-on="on"><v-icon>fas fa-plus-circle</v-icon></v-btn>
+          </v-list-item-icon>
+          -->
+        </v-list-group>
+        <v-list-group
+          color="orange darken-4"
+          prepend-icon="fas fa-user-friends"
+          no-action
+          value="true"
+        >
+          <template v-slot:activator>
+            <v-list-item-title>
+              Groups
+            </v-list-item-title>
+          </template>
+          <v-list-item
+            v-for="item in groups"
+            :key="item.name"
+            class=""
+            link
+            dense
+          >
+            <v-list-item-title v-text="item.name" />
             <v-list-item-avatar>
               <img
-                :src="`https://randomuser.me/api/portraits/men/${item.picture}.jpg`"
+                v-if="item.id"
+                :src="`https://randomuser.me/api/portraits/men/${item.id}.jpg`"
                 alt=""
               >
+              <v-icon
+                v-else
+                small
+                v-text="item.icon"
+              ></v-icon>
             </v-list-item-avatar>
-            <v-list-item-title v-text="item.text" />
           </v-list-item>
-        </v-list>
-        <v-list-item
-          class="mt-4"
-          link
-        >
-          <v-list-item-action>
-            <v-icon color="grey darken-1">mdi-plus-circle-outline</v-icon>
-          </v-list-item-action>
-          <v-list-item-title class="grey--text text--darken-1">Browse Channels</v-list-item-title>
-        </v-list-item>
+          <!--
+          <v-list-item-icon>
+            <v-btn icon v-on="on"><v-icon>fas fa-plus-circle</v-icon></v-btn>
+          </v-list-item-icon>
+          -->
+        </v-list-group>
+      </v-list>
+
+      <template v-slot:append>
         <v-list-item link>
           <v-list-item-action>
             <v-icon color="grey darken-1">mdi-settings</v-icon>
           </v-list-item-action>
-          <v-list-item-title class="grey--text text--darken-1">Manage Subscriptions</v-list-item-title>
+          <v-list-item-title class="grey--text text--darken-1">Settings</v-list-item-title>
         </v-list-item>
-      </v-list>
+      </template>
     </v-navigation-drawer>
 
     <!-- Bar on the top -->
@@ -137,10 +198,10 @@
         <!-- Not login -->
         <template v-if="debug == false">
           <v-btn
-            color="primary"
+            color="orange"
             large
-            @click="login"
-          >Login</v-btn>
+            @click="signIn"
+          >Sign In</v-btn>
         </template>
         <!-- Logged in -->
         <template v-else>
@@ -162,9 +223,16 @@
               </v-btn>
             </template>
             <v-card
-              width="400px"
-              height="200px"
-            >email
+              class="loginCard"
+            >
+              <h3>You has been logged in as</h3>
+              <p>email</p>
+              <v-btn
+                color="amber"
+                @click="signOut"
+              >
+                Sign Out
+              </v-btn>
             </v-card>
           </v-menu>
         </template>
@@ -213,7 +281,7 @@
           small
           color="orange"
         >
-          <v-icon>fas fa-images</v-icon>
+          <v-icon small>fas fa-images</v-icon>
         </v-btn>
         <v-btn
           fab
@@ -221,7 +289,7 @@
           small
           color="purple"
         >
-          <v-icon>fas fa-newspaper</v-icon>
+          <v-icon small>fas fa-newspaper</v-icon>
         </v-btn>
       </v-speed-dial>
     </v-footer>
@@ -240,21 +308,21 @@
     },
     data: () => ({
       drawer: null,
-      items: [
-        { icon: 'trending_up', text: 'Most Popular' },
-        { icon: 'subscriptions', text: 'Subscriptions' },
-        { icon: 'history', text: 'History' },
-        { icon: 'featured_play_list', text: 'Playlists' },
-        { icon: 'watch_later', text: 'Watch Later' },
+      recommandations: [
+        {color: 'orange', ganre: 'Restaurants', icon: 'fas fa-utensils', dark: true},
+        {color: 'brown', ganre: 'Coffee', icon: 'fas fa-coffee', dark: true},
+        {color: 'blue-grey', ganre: 'Cinemas', icon: 'fas fa-video', dark: true},
+        {color: 'green', ganre: 'Parks', icon: 'fas fa-tree', dark: true},
+        {color: '', ganre: 'More...', icon: 'fas fa-ellipsis-h', dark: false},
       ],
-      items2: [
-        { picture: 28, text: 'Joseph' },
-        { picture: 38, text: 'Apple' },
-        { picture: 48, text: 'Xbox Ahoy' },
-        { picture: 58, text: 'Nokia' },
-        { picture: 78, text: 'MKBHD' },
+      groups: [
+        {name: 'Mitsubishi', id: 36},
+        {name: 'Mitsui', id: 63},
+        {name: 'Mizuho', id: 27},
+        {name: 'Resona', id: 72},
+        {name: 'More...', icon: 'fas fa-ellipsis-h'}
       ],
-      debug: true,
+      debug: false,
       isMobile: null,
       map: null,
       fab: false,
@@ -311,8 +379,8 @@
         }
         return isMobile
       },
-      login: function() {
-        this.$router.replace('/about')
+      signIn: function() {
+        this.$router.replace('/SignIn')
         console.log('replaced')
       }
     },
@@ -328,6 +396,16 @@ body {
   margin: 0;
   padding: 0
 }
+.navigation {
+  text-align: left
+}
+.title {
+  text-align: left;
+  font-size: 200%
+}
+.subtitle {
+  text-align: left
+}
 .bar {
   margin: 0;
   padding-top: 15px;
@@ -342,6 +420,9 @@ body {
   width: 100vw;
   margin: 0;
   padding: 0
+}
+.loginCard {
+  padding: 20px
 }
 .map {
   width: 100vw;
