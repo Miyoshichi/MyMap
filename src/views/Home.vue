@@ -196,7 +196,7 @@
         <v-spacer />
         <!-- Login or user button -->
         <!-- Logged in -->
-        <template v-if="user != 'default'">
+        <template v-if="user">
           <v-menu
             close-on-click
             offset-y
@@ -218,7 +218,7 @@
               class="loginCard"
             >
               <h3>You has been logged in as</h3>
-              <p>: {{ user }}</p>
+              <p>{{ user }}</p>
               <v-btn
                 color="amber"
                 @click="signOut"
@@ -352,6 +352,7 @@ export default {
     // console.log(this.isMobile)
   },
   created() {
+    this.$vuetify.theme.dark = false
     this.user = this.$route.query.id
   },
   methods: {
@@ -393,12 +394,9 @@ export default {
     },
     signOut: function() {
       firebase.auth().signOut()
-      this.$router.replace('/')
+      this.$router.replace('/dev')
     }
-  },
-  created () {
-    this.$vuetify.theme.dark = false
-  },
+  }
 }
 </script>
 
