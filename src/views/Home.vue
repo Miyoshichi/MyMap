@@ -34,7 +34,7 @@
           <v-list-item-icon>
             <v-icon>fas fa-home</v-icon>
           </v-list-item-icon>
-          <v-list-item-title>
+          <v-list-item-title to="/">
             Home
           </v-list-item-title>
         </v-list-item>
@@ -46,11 +46,11 @@
         >
           <template v-slot:activator>
             <v-list-item-title>
-              Recommand
+              Recommend
             </v-list-item-title>
           </template>
           <v-list-item
-            v-for="item in recommandations"
+            v-for="item in recommendations"
             :key="item.ganre"
             class=""
             link
@@ -140,9 +140,6 @@
             color="rgba(255, 0, 255, 0)"
           >
             <v-app-bar-nav-icon small @click.stop="drawer = !drawer" />
-            <v-btn icon small>
-              <v-icon>my_location</v-icon>
-            </v-btn>
             <v-text-field
               solo
               flat
@@ -151,9 +148,63 @@
               hide-details
               dense
             />
-            <v-btn icon small>
-              <v-icon>fas fa-user-circle</v-icon>
+            <v-btn icon small @click="search">
+              <v-icon>fas fa-search</v-icon>
             </v-btn>
+            <template v-if="user">
+              <v-btn icon small @click="overlay = !overlay">
+                <v-icon>fas fa-filter</v-icon>
+              </v-btn>
+              <v-spacer />
+              <v-divider inset vertical />
+              <v-spacer />
+              <v-menu
+                close-on-click
+                close-on-content-click
+                offset-y
+                transition="slide-y-transition"
+                bottom
+                nudge-bottom="15px"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-avatar
+                    size="30"
+                    v-on="on"
+                  >
+                    <img src="https://avatars1.githubusercontent.com/u/33858552?s=460&v=4">
+                  </v-avatar>
+                </template>
+                <v-card
+                  class="mx-auto"
+                >
+                  <v-list-item>
+                    <v-list-item-content>
+                      <v-list-item-title class="headline">
+                        You has been logged in as
+                      </v-list-item-title>
+                      <v-list-item-subtitle>
+                        {{ user }}
+                      </v-list-item-subtitle>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-card-actions>
+                    <v-spacer />
+                    <v-btn
+                      text
+                      color="amber darken-4"
+                      @click="signOut"
+                    >
+                      Sign Out
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-menu>
+            </template>
+            <template v-else>
+              <v-btn icon small @click="signIn">
+                <v-icon>fas fa-user-circle</v-icon>
+              </v-btn>
+            </template>           
           </v-toolbar>
         </v-card>
       </v-app-bar>
@@ -181,16 +232,20 @@
               flat
               placeholder="Search the place"
               hide-details
-              append-icon="search"
               single-line
             />
-            <v-divider
-              inset
-              vertical>
-            </v-divider>
-            <v-btn icon>
-              <v-icon>my_location</v-icon>
+            <v-btn icon @click="search">
+              <v-icon small>fas fa-search</v-icon>
             </v-btn>
+            <template v-if="user">
+              <v-divider
+                inset
+                vertical>
+              </v-divider>
+              <v-btn icon @click="overlay = !overlay">
+                <v-icon small>fas fa-filter</v-icon>
+              </v-btn>
+            </template>
           </v-toolbar>
         </v-card>
         <v-spacer />
@@ -199,32 +254,43 @@
         <template v-if="user">
           <v-menu
             close-on-click
+            close-on-content-click
             offset-y
             transition="slide-y-transition"
             bottom
             nudge-bottom="15px"
           >
             <template v-slot:activator="{ on }">
-              <v-btn
-                icon
-                large
-                color="pink"
+              <v-avatar
                 v-on="on"
               >
-                <v-icon>fas fa-user-circle</v-icon>
-              </v-btn>
+                <img src="https://avatars1.githubusercontent.com/u/33858552?s=460&v=4">
+              </v-avatar>
             </template>
             <v-card
-              class="loginCard"
+              class="mx-auto"
             >
-              <h3>You has been logged in as</h3>
-              <p>{{ user }}</p>
-              <v-btn
-                color="amber"
-                @click="signOut"
-              >
-                Sign Out
-              </v-btn>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title class="headline">
+                    You has been logged in as
+                  </v-list-item-title>
+                  <v-list-item-subtitle>
+                    {{ user }}
+                  </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+              <v-card-actions>
+                <v-spacer />
+                <v-btn
+                  text
+                  color="amber darken-4"
+                  @click="signOut"
+                >
+                  Sign Out
+                </v-btn>
+                <v-spacer />
+              </v-card-actions>
             </v-card>
           </v-menu>
         </template>
@@ -249,50 +315,107 @@
     />
 
     <!-- Floating button for upping -->
-    <v-footer
-      app
-      class="bar"
-      height="72px"
-      elevation="0"
-      color="rgba(0, 0, 0, 0)"
-    >
-      <v-speed-dial
-        v-model="fab"
-        absolute
-        right
-        bottom
-        direction="top"
-        transition="slide-y-reverse-transition"
+    <template v-if="user">
+      <v-footer
+        app
+        class="bar"
+        height="72px"
+        elevation="0"
+        color="rgba(0, 0, 0, 0)"
       >
-        <template v-slot:activator>
+        <v-speed-dial
+          v-model="fab"
+          absolute
+          right
+          bottom
+          direction="top"
+          transition="slide-y-reverse-transition"
+        >
+          <template v-slot:activator>
+            <v-btn
+              v-model="fab"
+              color="pink lighten-2"
+              dark
+              fab
+            >
+              <v-icon v-if="fab">fas fa-times</v-icon>
+              <v-icon v-else>fas fa-feather</v-icon>
+            </v-btn>
+          </template>
           <v-btn
-            v-model="fab"
-            color="pink lighten-2"
-            dark
             fab
+            dark
+            small
+            color="orange"
+            @click="plusPin"
           >
-            <v-icon v-if="fab">fas fa-times</v-icon>
-            <v-icon v-else>fas fa-feather</v-icon>
+            <v-icon small>fas fa-images</v-icon>
           </v-btn>
-        </template>
-        <v-btn
-          fab
-          dark
-          small
-          color="orange"
-        >
-          <v-icon small>fas fa-images</v-icon>
-        </v-btn>
-        <v-btn
-          fab
-          dark
-          small
-          color="purple"
-        >
-          <v-icon small>fas fa-newspaper</v-icon>
-        </v-btn>
-      </v-speed-dial>
-    </v-footer>
+          <v-btn
+            fab
+            dark
+            small
+            color="purple"
+          >
+            <v-icon small>fas fa-newspaper</v-icon>
+          </v-btn>
+        </v-speed-dial>
+      </v-footer>
+    </template>
+
+    <!-- Overlay pin filter -->
+    <v-overlay :value="overlay">
+      <v-card light class="mx-auto" :style="{width: isMobile?'80vw':'50vw'}">
+        <v-card-text class="headline">
+          Select the category of pins
+        </v-card-text>
+        <v-list-item>
+          <v-chip
+            v-for="(item, i) in selectedCategory"
+            :key="i"
+            class="ma-1"
+            close
+            @click:close="selectedCategory.splice(i, 1)"
+          >{{ item }}
+          </v-chip>
+        </v-list-item>
+        <v-spacer />
+        <v-list>
+          <v-list-item-group
+            v-model="selectedCategory"
+            multiple
+          >
+            <v-list-item
+              v-for="(item, i) in category"
+              :key="i"
+              :value="item"
+              active-class="amber--text text--accent-4"
+            >
+              <template v-slot:default="{ active, toggle }">
+                <v-list-item-content v-text="item" />
+                <v-list-item-action>
+                  <v-checkbox
+                    color="amber accent-4"
+                    :input-value="active"
+                    :true-value="item"
+                    @click="toggle"
+                  ></v-checkbox>
+                </v-list-item-action>
+              </template>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            text
+            color="amber accent-4"
+            @click="overlay = false"
+          >Next
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-overlay>
 
   </v-app>
 </template>
@@ -310,7 +433,7 @@ export default {
   },
   data: () => ({
     drawer: null,
-    recommandations: [
+    recommendations: [
       {color: 'orange', ganre: 'Restaurants', icon: 'fas fa-utensils', dark: true},
       {color: 'brown', ganre: 'Coffee', icon: 'fas fa-coffee', dark: true},
       {color: 'blue-grey', ganre: 'Cinemas', icon: 'fas fa-video', dark: true},
@@ -324,7 +447,22 @@ export default {
       {name: 'Resona', id: 72},
       {name: 'More...', icon: 'fas fa-ellipsis-h'}
     ],
+    category: [
+      'Restaurants',
+      'Bars',
+      'Parks',
+      'Museums',
+      'Landmarks'
+    ],
+    selectedCategory: [
+      'Restaurants',
+      'Bars',
+      'Parks',
+      'Museums',
+      'Landmarks'
+    ],
     debug: false,
+    overlay: false,
     user: 'default',
     //user: firebase.auth().currentUser.username,
     isMobile: null,
@@ -344,7 +482,7 @@ export default {
     }
     console.log(this.user)
     console.log(device.type)
-    if(this.whichTypeOfDevice()) {
+    if (this.whichTypeOfDevice()) {
       this.isMobile = true
     } else {
       this.isMobile = false
@@ -395,6 +533,17 @@ export default {
     signOut: function() {
       firebase.auth().signOut()
       this.$router.replace('/dev')
+    },
+    search: function() {
+      this.$router.push('/search')
+    },
+    plusPin: function() {
+      this.$router.push({
+        path: '/upload',
+        query: {
+          id: this.user
+        }
+      })
     }
   }
 }
@@ -430,9 +579,6 @@ body {
   width: 100vw;
   margin: 0;
   padding: 0
-}
-.loginCard {
-  padding: 20px
 }
 .map {
   width: 100vw;
