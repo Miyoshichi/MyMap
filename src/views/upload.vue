@@ -394,10 +394,18 @@ import localStorage from '../utils/localstorage'
       },
 
       save_pin(){
-          const pinParams = [this.place,this.latitude,this.longitude,this.selectedCategory,this.model, this.user]
-          localStorage.set('sample', pinParams)
+          let pins = !localStorage.get("pins") ? [] : localStorage.get("pins") 
+          pins.push({
+              place: this.place,
+              latitude: this.latitude,
+              longitude: this.longitude,
+              selectedCategory: this.selectedCategory,
+              tags: this.model,
+              user: this.user
+          })
+          localStorage.set('pins', pins)
           alert('You added new pin!')
-          window.location.href = '..';
+          this.$router.push('/')
       }
     },
   //タグ終了

@@ -428,7 +428,7 @@
 
 <script>
 import firebase from 'firebase'
-
+import localStorage from '../utils/localstorage'
 export default {
   props: {
     source: String,
@@ -484,7 +484,7 @@ export default {
   
   created() {
     console.log("created", this.$route)
-    this.user = this.$route.query.id
+    this.user = localStorage.get('user')
     this.$vuetify.theme.dark = false
   },
 
