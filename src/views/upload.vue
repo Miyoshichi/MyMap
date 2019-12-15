@@ -299,7 +299,7 @@ import localStorage from '../utils/localstorage'
     }
   },
   created() {
-      this.user = this.$route.query.id
+      this.user = localStorage.get('user')
   },
     props: {
       source: String,
