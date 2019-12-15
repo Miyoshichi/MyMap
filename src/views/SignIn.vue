@@ -34,7 +34,7 @@
                   </v-form>
                   <p>
                     If you don't have an account, you can
-                    <router-link to="/signup">create</router-link>one now.
+                    <router-link to="/signup">create</router-link> one now.
                   </p>
                 </v-card-text>
                 <v-spacer />
@@ -70,7 +70,7 @@ export default {
         .then(
           user => {
             console.log(user)
-            alert(user + "has been signed in successfully.");
+            alert(user.user.email + " has been signed in successfully.");
             localStorage.set('user', user)
             this.$router.push({
               path: "/",

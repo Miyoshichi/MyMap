@@ -34,7 +34,7 @@
                   </v-form>
                   <p>
                     If you have an account, you can
-                    <router-link to="/signin">sign in</router-link>now.
+                    <router-link to="/signin">sign in</router-link> now.
                   </p>
                 </v-card-text>
                 <v-spacer />
@@ -69,7 +69,7 @@ export default {
         .createUserWithEmailAndPassword(this.username, this.password)
         .then(
           user => {
-            alert(user + "has been created successfully.");
+            alert(user.user.email + " has been created successfully.");
             localStorage.set('user', user)            
             this.$router.push({
               path: "/",
