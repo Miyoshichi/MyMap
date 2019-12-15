@@ -196,7 +196,7 @@
         <v-spacer />
         <!-- Login or user button -->
         <!-- Logged in -->
-        <template v-if="user != 'default'">
+        <template v-if="user">
           <v-menu
             close-on-click
             offset-y
@@ -280,6 +280,9 @@
           dark
           small
           color="orange"
+
+          @click="push_ID"
+          
         >
           <v-icon small>fas fa-images</v-icon>
         </v-btn>
@@ -336,6 +339,13 @@ export default {
     maxZoom: 18,
     minZoom: 10
   }),
+  
+  created() {
+    console.log("created", this.$route)
+    this.user = this.$route.query.id
+    this.$vuetify.theme.dark = false
+  },
+
   mounted() {
     try {
       this.initMap()
@@ -351,9 +361,7 @@ export default {
     }
     // console.log(this.isMobile)
   },
-  created() {
-    this.user = this.$route.query.id
-  },
+ 
   methods: {
     initMap() {
       this.map = new google.maps.Map(document.getElementById("allmap"), {
@@ -394,11 +402,22 @@ export default {
     signOut: function() {
       firebase.auth().signOut()
       this.$router.replace('/')
+    },
+    push_ID:function() {
+      this.$router.push({
+        path: '/upload',
+        query: {
+          id: this.user
+        }
+      }
+
+
+      )
     }
+
   },
-  created () {
-    this.$vuetify.theme.dark = false
-  },
+  
+
 }
 </script>
 
@@ -448,4 +467,6 @@ body {
 #create .v-btn--floating {
   position: relative;
 }
+
+
 </style>

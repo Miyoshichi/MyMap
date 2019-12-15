@@ -22,7 +22,7 @@ Vue.use(VueGoogleMaps, {
 Vue.use(vuetify);
 
 var firebaseConfig = {
-  apiKey: "AIzaSyB85tjhl9s8iy04nKQRRh3qswN9h7GXJ4E",
+  apiKey: process.env.VUE_APP_GMAPS_API_KEY,
   authDomain: "mymap-sample-1575260179332.firebaseapp.com",
   databaseURL: "https://mymap-sample-1575260179332.firebaseio.com",
   projectId: "mymap-sample-1575260179332",
