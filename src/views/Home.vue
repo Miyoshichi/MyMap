@@ -1,6 +1,39 @@
 <template>
   <v-app id="inspire">
 
+    <!-- Welcome -->
+    <template v-if="!user">
+      <v-overlay :value="welcome">
+        <v-card light class="mx-auto" :style="{width: isMobile?'80vw':'50vw'}">
+          <v-img
+            :src="require('../../public/logo_welcome.png')"
+          ></v-img>
+          <v-card-text class="headline">
+            Welcome to MyMap alpha
+          </v-card-text>
+          <v-card-text>
+            You cannot pin your spot without an account.<br>
+            * Note that some features are unusable.
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn
+              text
+              color="amber accent-4"
+              @click="welcome = false"
+            >Not Now
+            </v-btn>
+            <v-btn
+              text
+              color="orange"
+              @click="signIn"
+            >Sign In
+            </v-btn>
+          </v-card-actions>        
+        </v-card>
+      </v-overlay>
+    </template>
+
     <!-- Navigation drawer on the left -->
     <v-navigation-drawer
       v-model="drawer"
@@ -9,7 +42,7 @@
       roun
       temporary
     >
-      <v-list rounded>
+      <v-list rounded disabled>
 
         <v-list-item>
           <v-img
@@ -461,6 +494,7 @@
 <script>
 import firebase from 'firebase'
 import localStorage from '../utils/localstorage'
+
 export default {
   props: {
     source: String,
@@ -496,16 +530,15 @@ export default {
       'Landmarks'
     ],
     debug: false,
-    showRestaurants: true,
     overlay: false,
-    user: 'default',
-    //user: firebase.auth().currentUser.username,
+    welcome: true,
+    user: null,
+    uid: 0,
     isMobile: null,
     map: null,
-    restaurantsMarker: null,
     fab: false,
-    lat: 35.6055588,
-    lng: 139.6838682,
+    lat: 35.73353,
+    lng: 139.712118,
     zoom: 16,
     maxZoom: 18,
     minZoom: 10,
@@ -516,21 +549,20 @@ export default {
     dialogPin: null,
     pin:[]
   }),
-  
   created() {
     console.log("created", this.$route)
-    this.$vuetify.theme.dark = false
-    this.user = localStorage.get('user')
+    if(!!localStorage.get('user')) {
+      this.user = localStorage.get('user')["user"]["email"]
+      this.uid = localStorage.get('user')["user"]["uid"]
+    }
     this.$vuetify.theme.dark = false
   },
-
   mounted() {
     try {
       this.initMap()
     } catch (error) {
       console.error(error)
     }
-    console.log(this.user)
     console.log(device.type)
     if (this.whichTypeOfDevice()) {
       this.isMobile = true
@@ -559,16 +591,20 @@ export default {
       })
       const pins = !localStorage.get("pins") ? [] : localStorage.get("pins")
       const openDialog = this.openDialog
-      pins.forEach(pin => {
-        const marker = new google.maps.Marker({
-          position: {lat: Number(pin.latitude), lng: Number(pin.longitude)},
-          map: this.map
-        })
-        marker.addListener( "click", function ( argument ) {        
+      pins.forEach( pin => {
+        if (pin.pinUser["user"]["uid"] == this.uid) {
+          if (this.selectedCategory.indexOf(pin.selectedCategory) >= 0) {
+            console.log(this.selectedCategory.indexOf(pin.selectedCategory))
+            const marker = new google.maps.Marker({
+              position: {lat: Number(pin.latitude), lng: Number(pin.longitude)},
+              map: this.map
+            })
+            marker.addListener( "click", function ( argument ) {        
           openDialog(pin)
         } )
+          }
+        }
         console.log(pin)
-        
       })
     },
     openDialog(pin) {
@@ -589,9 +625,7 @@ export default {
     },
     signOut: function() {
       firebase.auth().signOut()
-      this.$router.replace('/')
-    },
-    push_ID:function() {
+      localStorage.set('user', null)
       this.$router.replace('/dev')
     },
     search: function() {
@@ -601,21 +635,12 @@ export default {
       this.$router.push({
         path: '/upload',
         query: {
-          id: this.user
+          //id: this.user
         }
       })
     },
     filter: function() {
       this.overlay = false
-      var i
-      for (i in this.selectedCategory) {
-        if (this.selectedCategory[i] == 'Restaurants') {
-          this.showRestaurants = true
-          break
-        } else {
-          this.showRestaurants = false
-        }
-      }
       this.initMap()
     }
   }
@@ -665,6 +690,4 @@ body {
 #create .v-btn--floating {
   position: relative;
 }
-
-
 </style>

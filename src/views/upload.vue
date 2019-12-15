@@ -67,9 +67,9 @@
                         <v-combobox
                             v-model="selectedCategory"
                             :items="categories"
+                            chips
                             label="Select a favorite activity or create a new one"
                         ></v-combobox>
-                       
 <!--タグ開始-->
 <p class="text-left">Tag</p>
 <v-combobox
@@ -221,8 +221,9 @@ import localStorage from '../utils/localstorage'
           color: 'blue',
         },
       ],
-      selectedCategory: [],
-      categories: ['Restaurants',
+      selectedCategory: null,
+      categories: [
+      'Restaurants',
       'Bars',
       'Parks',
       'Museums',
@@ -304,7 +305,7 @@ import localStorage from '../utils/localstorage'
             }
         },
       edit (index, item) {
-          console.log(item)
+          //console.log(item)
         if (!this.editing) {
           this.editing = item
           this.index = index
@@ -313,9 +314,9 @@ import localStorage from '../utils/localstorage'
           this.index = -1
         }
       },
-      editCategory (index, item) {
-          console.log(item)
-      },
+      //editCategory (index, item) {
+          //console.log(item)
+      //},
       filter (item, queryText, itemText) {
         if (item.header) return false
 
@@ -337,7 +338,7 @@ import localStorage from '../utils/localstorage'
               longitude: this.longitude,
               selectedCategory: this.selectedCategory,
               tags: this.model,
-              user: this.user
+              pinUser: this.user
           })
           localStorage.set('pins', pins)
           alert('You added new pin!')

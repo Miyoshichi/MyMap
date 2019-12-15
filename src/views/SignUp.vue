@@ -51,7 +51,8 @@
 </template>
 
 <script>
-import firebase from "firebase";
+import firebase from "firebase"
+import localStorage from '../utils/localstorage'
 
 export default {
   props: {
@@ -68,11 +69,12 @@ export default {
         .createUserWithEmailAndPassword(this.username, this.password)
         .then(
           user => {
-            alert(user.username + "has been created successfully.");
+            alert(user + "has been created successfully.");
+            localStorage.set('user', user)            
             this.$router.push({
               path: "/",
               query: {
-                id: this.username
+                //id: this.username
               }
             });
             //console.log('successfully signed in')
