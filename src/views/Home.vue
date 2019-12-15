@@ -518,6 +518,7 @@ export default {
   
   created() {
     console.log("created", this.$route)
+    this.$vuetify.theme.dark = false
     this.user = localStorage.get('user')
     this.$vuetify.theme.dark = false
   },
@@ -536,10 +537,6 @@ export default {
       this.isMobile = false
     }
     // console.log(this.isMobile)
-  },
-  created() {
-    this.$vuetify.theme.dark = false
-    this.user = this.$route.query.id
   },
   methods: {
     initMap() {
