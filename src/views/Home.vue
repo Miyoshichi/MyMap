@@ -418,7 +418,39 @@
         </v-card-actions>
       </v-card>
     </v-overlay>
+    <v-row justify="center" v-if="!!dialogPin">
+    <v-dialog
+      v-model="alert_triger"
+    >
+      <v-card>
+        <v-card-title class="headline">{{ dialogPin.place }}</v-card-title>
 
+        <v-card-text>
+          <span>{{ dialogPin.tags.map((tag) => tag.text).join(', ') }}</span>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn
+            color="green darken-1"
+            text
+            @click="alert_triger = false"
+          >
+            Disagree
+          </v-btn>
+
+          <v-btn
+            color="green darken-1"
+            text
+            @click="alert_triger = false"
+          >
+            Agree
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-row>
   </v-app>
 </template>
 
@@ -479,7 +511,10 @@ export default {
     minZoom: 10,
     restaurantsLocation: [
       {lat: 35.6080668, lng: 139.6824988}
-    ]
+    ],
+    alert_triger: false,
+    dialogPin: null,
+    pin:[]
   }),
   
   created() {
@@ -523,16 +558,22 @@ export default {
         }
       })
       const pins = !localStorage.get("pins") ? [] : localStorage.get("pins")
+      const openDialog = this.openDialog
       pins.forEach(pin => {
         const marker = new google.maps.Marker({
           position: {lat: Number(pin.latitude), lng: Number(pin.longitude)},
           map: this.map
         })
-        marker.addListener( "click", function ( argument ) {
-	        alert("clicked!" + JSON.stringify(pin)) ;
+        marker.addListener( "click", function ( argument ) {        
+          openDialog(pin)
         } )
         console.log(pin)
+        
       })
+    },
+    openDialog(pin) {
+      this.alert_triger = true
+      this.dialogPin = pin
     },
     whichTypeOfDevice() {
       var isMobile = null
