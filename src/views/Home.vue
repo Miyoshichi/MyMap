@@ -1,6 +1,35 @@
 <template>
   <v-app id="inspire">
 
+    <!-- Welcome -->
+    <template v-if="!user">
+      <v-overlay :value="welcome">
+        <v-card light class="mx-auto" :style="{width: isMobile?'80vw':'50vw'}">
+          <v-img
+            :src="require('../../public/logo_welcome.png')"
+          ></v-img>
+          <v-card-text class="headline">
+            Welcome to MyMap alpha
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn
+              text
+              color="amber accent-4"
+              @click="welcome = false"
+            >Not Now
+            </v-btn>
+            <v-btn
+              text
+              color="amber accent-4"
+              @click="signIn"
+            >Sign In
+            </v-btn>
+          </v-card-actions>        
+        </v-card>
+      </v-overlay>
+    </template>
+
     <!-- Navigation drawer on the left -->
     <v-navigation-drawer
       v-model="drawer"
@@ -466,6 +495,7 @@ export default {
     debug: false,
     showRestaurants: true,
     overlay: false,
+    welcome: true,
     user: 'default',
     //user: firebase.auth().currentUser.username,
     isMobile: null,
