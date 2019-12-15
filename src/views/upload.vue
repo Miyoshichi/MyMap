@@ -64,88 +64,12 @@
                             </v-col>
                         </v-list-item>
                         <!--場所入力終了-->
-                       <p class="text-left">Category</p>
                         <v-combobox
-                          v-model="selectedCategory"
-                          :items="categories"
-                          chips
-                          label="Search for categories"
+                            v-model="selectedCategory"
+                            :items="categories"
+                            chips
+                            label="Select a favorite activity or create a new one"
                         ></v-combobox>
-                        <!--
-                        <v-combobox
-                        v-model="selectedCategory"
-                        :filter="filter"
-                        :hide-no-data="!search"
-                        :items="categories"
-                        :search-input.sync="search"
-                        hide-selected
-                        label="Search for tags"
-                        multiple
-                        small-chips
-                        solo
-                        >
-                        <template v-slot:no-data>
-                            <v-list-item>
-                            <span class="subheading">Create</span>
-                            <v-chip
-                                :color="`${colors[nonce - 1]} lighten-3`"
-                                label
-                                small
-                            >
-                                {{ search }}
-                            </v-chip>
-                            </v-list-item>
-                        </template>
-                        <template v-slot:selection="{ attrs, item, parent, selected }">
-                            <v-chip
-                            v-if="item === Object(item)"
-                            v-bind="attrs"
-                            :color="`${item.color} lighten-3`"
-                            :input-value="selected"
-                            label
-                            small
-                            >
-                            <span class="pr-2">
-                                {{ item.text }}
-                            </span>
-                            <v-icon
-                                small
-                                @click="parent.selectItem(item)"
-                            >close</v-icon>
-                            </v-chip>
-                        </template>
-                        <template v-slot:item="{ index, item }">
-                            <v-text-field
-                            v-if="editing === item"
-                            v-model="editing.text"
-                            autofocus
-                            flat
-                            background-color="transparent"
-                            hide-details
-                            solo
-                            @keyup.enter="editCategory(index, item)"
-                            ></v-text-field>
-                            <v-chip
-                            v-else
-                            :color="`${item.color} lighten-3`"
-                            dark
-                            label
-                            small
-                            >
-                            {{ item.text }}
-                            </v-chip>
-                            <v-spacer></v-spacer>
-                            <v-list-item-action @click.stop>
-                            <v-btn
-                                icon
-                                @click.stop.prevent="edit(index, item)"
-                            >
-                                <v-icon>{{ editing !== item ? 'mdi-pencil' : 'mdi-check' }}</v-icon>
-                            </v-btn>
-                            </v-list-item-action>
-                        </template>
-                        </v-combobox>
-                        -->
 <!--タグ開始-->
 <p class="text-left">Tag</p>
 <v-combobox
