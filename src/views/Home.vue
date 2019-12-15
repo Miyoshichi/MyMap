@@ -505,8 +505,8 @@ export default {
     isMobile: null,
     map: null,
     fab: false,
-    lat: 35.6055588,
-    lng: 139.6838682,
+    lat: 35.73353,
+    lng: 139.712118,
     zoom: 16,
     maxZoom: 18,
     minZoom: 10
@@ -552,13 +552,15 @@ export default {
       const pins = !localStorage.get("pins") ? [] : localStorage.get("pins")
       pins.forEach( pin => {
         if (pin.pinUser["user"]["uid"] == this.uid) {
-          if (this.selectedCategory.indexOf(pin.selectedCategory["0"]["text"]) >= 0) {
+          if (this.selectedCategory.indexOf(pin.selectedCategory) >= 0) {
+            console.log(this.selectedCategory.indexOf(pin.selectedCategory))
             const marker = new google.maps.Marker({
               position: {lat: Number(pin.latitude), lng: Number(pin.longitude)},
               map: this.map
             })
           }
         }
+        console.log(pin)
       })
     },
     whichTypeOfDevice() {
