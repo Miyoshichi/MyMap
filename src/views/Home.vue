@@ -11,6 +11,10 @@
           <v-card-text class="headline">
             Welcome to MyMap alpha
           </v-card-text>
+          <v-card-text>
+            You cannot pin your spot without an account.<br>
+            * Note that some features are unusable.
+          </v-card-text>
           <v-card-actions>
             <v-spacer />
             <v-btn
@@ -21,7 +25,7 @@
             </v-btn>
             <v-btn
               text
-              color="amber accent-4"
+              color="orange"
               @click="signIn"
             >Sign In
             </v-btn>

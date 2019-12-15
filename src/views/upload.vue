@@ -368,7 +368,7 @@ import localStorage from '../utils/localstorage'
             }
         },
       edit (index, item) {
-          console.log(item)
+          //console.log(item)
         if (!this.editing) {
           this.editing = item
           this.index = index
@@ -377,9 +377,9 @@ import localStorage from '../utils/localstorage'
           this.index = -1
         }
       },
-      editCategory (index, item) {
-          console.log(item)
-      },
+      //editCategory (index, item) {
+          //console.log(item)
+      //},
       filter (item, queryText, itemText) {
         if (item.header) return false
 
