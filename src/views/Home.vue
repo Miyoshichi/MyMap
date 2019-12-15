@@ -522,15 +522,17 @@ export default {
           position: google.maps.ControlPosition.LEFT_BOTTOM
         }
       })
-      if (this.showRestaurants == true) {
-        var i
-        for (i in this.restaurantsLocation) {
-          this.restaurantsMarker = new google.maps.Marker({
-            position: {lat: this.restaurantsLocation[i]["lat"], lng: this.restaurantsLocation[i]["lng"]}
-          })
-          this.restaurantsMarker.setMap(this.map)
-        }
-      }
+      const pins = !localStorage.get("pins") ? [] : localStorage.get("pins")
+      pins.forEach(pin => {
+        const marker = new google.maps.Marker({
+          position: {lat: Number(pin.latitude), lng: Number(pin.longitude)},
+          map: this.map
+        })
+        marker.addListener( "click", function ( argument ) {
+	        alert("clicked!" + JSON.stringify(pin)) ;
+        } )
+        console.log(pin)
+      })
     },
     whichTypeOfDevice() {
       var isMobile = null
