@@ -52,7 +52,7 @@
 
 <script>
 import firebase from "firebase";
-
+import localStorage from '../utils/localstorage'
 export default {
   props: {
     source: String
@@ -68,7 +68,8 @@ export default {
         .signInWithEmailAndPassword(this.username, this.password)
         .then(
           user => {
-            alert(user.username + "has been signed in successfully.");
+			alert(user.username + "has been signed in successfully.");
+			localStorage.set('user', user)
             this.$router.push({
               path: "/",
               query: {
