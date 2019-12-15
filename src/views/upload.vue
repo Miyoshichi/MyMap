@@ -148,14 +148,12 @@
   <!--タグ終了-->
                  
                   <br>
-                  <v-file-input
+                  <v-text-field
             v-model="input_image"
-            accept="image/*"
             show-size
             label="Upload a picture"
             prepend-icon="mdi-image"
-            @change="onImagePicked"
-          ></v-file-input>
+          ></v-text-field>
                 </v-form>
               </v-card-text>
               <v-card-actions>
@@ -338,7 +336,8 @@ import localStorage from '../utils/localstorage'
               longitude: this.longitude,
               selectedCategory: this.selectedCategory,
               tags: this.model,
-              pinUser: this.user
+              pinUser: this.user,
+              imageUrl: this.input_image
           })
           localStorage.set('pins', pins)
           alert('You added new pin!')

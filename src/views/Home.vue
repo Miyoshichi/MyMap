@@ -459,7 +459,9 @@
         <v-card-title class="headline">{{ dialogPin.place }}</v-card-title>
 
         <v-card-text>
+          <h3>Tag</h3>
           <span>{{ dialogPin.tags.map((tag) => tag.text).join(', ') }}</span>
+          <v-img :src="dialogPin.imageUrl" aspect-ratio="1.7" width="25%"></v-img>
         </v-card-text>
 
         <v-card-actions>
@@ -470,16 +472,10 @@
             text
             @click="alert_triger = false"
           >
-            Disagree
+            Close
           </v-btn>
 
-          <v-btn
-            color="green darken-1"
-            text
-            @click="alert_triger = false"
-          >
-            Agree
-          </v-btn>
+         
         </v-card-actions>
       </v-card>
     </v-dialog>
