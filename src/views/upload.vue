@@ -66,6 +66,13 @@
                         <!--場所入力終了-->
                        <p class="text-left">Category</p>
                         <v-combobox
+                          v-model="selectedCategory"
+                          :items="categories"
+                          chips
+                          label="Search for categories"
+                        ></v-combobox>
+                        <!--
+                        <v-combobox
                         v-model="selectedCategory"
                         :filter="filter"
                         :hide-no-data="!search"
@@ -138,6 +145,7 @@
                             </v-list-item-action>
                         </template>
                         </v-combobox>
+                        -->
 <!--タグ開始-->
 <p class="text-left">Tag</p>
 <v-combobox
@@ -289,8 +297,13 @@ import localStorage from '../utils/localstorage'
           color: 'blue',
         },
       ],
-      selectedCategory: [],
-      categories: [],
+      selectedCategory: null,
+      categories: [
+      'Restaurants',
+      'Bars',
+      'Parks',
+      'Museums',
+      'Landmarks'],
       x: 0,
       search: null,
       y: 0,
