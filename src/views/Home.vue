@@ -511,6 +511,13 @@ export default {
       {lat: 35.6080668, lng: 139.6824988}
     ]
   }),
+  
+  created() {
+    console.log("created", this.$route)
+    this.user = this.$route.query.id
+    this.$vuetify.theme.dark = false
+  },
+
   mounted() {
     try {
       this.initMap()
@@ -572,6 +579,9 @@ export default {
     },
     signOut: function() {
       firebase.auth().signOut()
+      this.$router.replace('/')
+    },
+    push_ID:function() {
       this.$router.replace('/dev')
     },
     search: function() {
@@ -645,4 +655,6 @@ body {
 #create .v-btn--floating {
   position: relative;
 }
+
+
 </style>
