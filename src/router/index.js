@@ -5,6 +5,7 @@ import Dev from '../views/Dev.vue'
 import SignIn from '../views/SignIn.vue'
 import SignUp from '../views/SignUp.vue'
 import upload from  '../views/upload.vue'
+import Search from '../views/Search.vue'
 
 Vue.use(VueRouter)
 
@@ -41,6 +42,11 @@ const routes = [
     path: '/upload',
     name: 'upload',
     component: upload
+  },
+  {
+    path: '/search',
+    name: 'search',
+    component: Search
   }
 ]
 

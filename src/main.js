@@ -5,24 +5,12 @@ import router from './router'
 import vuetify from './plugins/vuetify'
 import firebase from 'firebase'
 
-// import * as VueGoogleMaps from 'vue2-google-maps'
-
 Vue.config.productionTip = false
-
-/*
-Vue.use(VueGoogleMaps, {
-  load: {
-    key: 'AIzaSyB85tjhl9s8iy04nKQRRh3qswN9h7GXJ4E',
-    libraries: 'places'
-  },
-  installComponents: true
-})
-*/
 
 Vue.use(vuetify);
 
 var firebaseConfig = {
-  apiKey: process.env.VUE_APP_GMAPS_API_KEY,
+  apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
   authDomain: "mymap-sample-1575260179332.firebaseapp.com",
   databaseURL: "https://mymap-sample-1575260179332.firebaseio.com",
   projectId: "mymap-sample-1575260179332",

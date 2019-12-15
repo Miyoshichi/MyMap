@@ -1,4 +1,4 @@
-# mymap-sample
+# MyMap
 
 ## Project setup
 ```

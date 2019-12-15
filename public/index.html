@@ -12,7 +12,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title>MyMap (Sample)</title>
+    <title>MyMap alpha</title>
   </head>
   <body>
     <noscript>
@@ -23,6 +23,8 @@
     <script async defer
       src="https://maps.googleapis.com/maps/api/js?key=${process.env.VUE_APP_GMAPS_API_KEY}&callback=initMap">
     </script>
+    <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
+    <script src="https://kit.fontawesome.com/44a7d325ed.js" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/current-device/umd/current-device.min.js"></script>
   </body>
 </html>
