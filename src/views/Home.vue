@@ -168,10 +168,11 @@
               >
                 <template v-slot:activator="{ on }">
                   <v-avatar
+                    icon
                     size="30"
                     v-on="on"
                   >
-                    <img src="https://avatars1.githubusercontent.com/u/33858552?s=460&v=4">
+                    <v-icon color="red">fas fa-smile</v-icon>
                   </v-avatar>
                 </template>
                 <v-card
@@ -262,9 +263,10 @@
           >
             <template v-slot:activator="{ on }">
               <v-avatar
+                icon
                 v-on="on"
               >
-                <img src="https://avatars1.githubusercontent.com/u/33858552?s=460&v=4">
+                <v-icon color="red">fas fa-smile</v-icon>
               </v-avatar>
             </template>
             <v-card
@@ -410,7 +412,7 @@
           <v-btn
             text
             color="amber accent-4"
-            @click="overlay = false"
+            @click="filter"
           >Next
           </v-btn>
         </v-card-actions>
@@ -462,17 +464,22 @@ export default {
       'Landmarks'
     ],
     debug: false,
+    showRestaurants: true,
     overlay: false,
     user: 'default',
     //user: firebase.auth().currentUser.username,
     isMobile: null,
     map: null,
+    restaurantsMarker: null,
     fab: false,
     lat: 35.6055588,
     lng: 139.6838682,
     zoom: 16,
     maxZoom: 18,
-    minZoom: 10
+    minZoom: 10,
+    restaurantsLocation: [
+      {lat: 35.6080668, lng: 139.6824988}
+    ]
   }),
   mounted() {
     try {
@@ -511,24 +518,27 @@ export default {
           position: google.maps.ControlPosition.LEFT_BOTTOM
         }
       })
+      if (this.showRestaurants == true) {
+        var i
+        for (i in this.restaurantsLocation) {
+          this.restaurantsMarker = new google.maps.Marker({
+            position: {lat: this.restaurantsLocation[i]["lat"], lng: this.restaurantsLocation[i]["lng"]}
+          })
+          this.restaurantsMarker.setMap(this.map)
+        }
+      }
     },
     whichTypeOfDevice() {
-      // console.log('executed')
       var isMobile = null
       if (device.type == "mobile") {
-        // console.log('if')
         isMobile = true
-        // console.log('if is executed')
       } else {
-        // console.log('else')
         isMobile = false
-        // console.log('else is executed')
       }
       return isMobile
     },
     signIn: function() {
       this.$router.push('/signin')
-      // console.log('replaced')
     },
     signOut: function() {
       firebase.auth().signOut()
@@ -544,6 +554,19 @@ export default {
           id: this.user
         }
       })
+    },
+    filter: function() {
+      this.overlay = false
+      var i
+      for (i in this.selectedCategory) {
+        if (this.selectedCategory[i] == 'Restaurants') {
+          this.showRestaurants = true
+          break
+        } else {
+          this.showRestaurants = false
+        }
+      }
+      this.initMap()
     }
   }
 }
