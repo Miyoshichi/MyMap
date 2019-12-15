@@ -9,7 +9,7 @@
       roun
       temporary
     >
-      <v-list rounded>
+      <v-list rounded disabled>
 
         <v-list-item>
           <v-img
@@ -171,12 +171,14 @@
           rounded
           outlined
           placeholder="Input the place or spot"
-          append-icon="search"
           color="amber"
           single-line
           hide-details
           dense
         />
+        <v-btn icon>
+          <v-icon @click="search">fas fa-search</v-icon>
+        </v-btn>
         <v-spacer />
         <!--<v-btn icon small>
           <v-icon>fas fa-user-circle</v-icon>
@@ -428,6 +430,9 @@ export default {
     }
   },
   methods: {
+    search: function() {
+      this.$router.push('/')
+    },
     whichTypeOfDevice() {
       var isMobile = null
       if (device.type == "mobile") {

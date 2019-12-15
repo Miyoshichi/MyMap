@@ -401,7 +401,7 @@ import localStorage from '../utils/localstorage'
               longitude: this.longitude,
               selectedCategory: this.selectedCategory,
               tags: this.model,
-              user: this.user
+              pinUser: this.user
           })
           localStorage.set('pins', pins)
           alert('You added new pin!')

@@ -42,7 +42,7 @@
       roun
       temporary
     >
-      <v-list rounded>
+      <v-list rounded disabled>
 
         <v-list-item>
           <v-img
@@ -462,6 +462,7 @@
 <script>
 import firebase from 'firebase'
 import localStorage from '../utils/localstorage'
+
 export default {
   props: {
     source: String,
@@ -497,39 +498,31 @@ export default {
       'Landmarks'
     ],
     debug: false,
-    showRestaurants: true,
     overlay: false,
     welcome: true,
-    user: 'default',
-    //user: firebase.auth().currentUser.username,
+    user: null,
+    uid: 0,
     isMobile: null,
     map: null,
-    restaurantsMarker: null,
     fab: false,
     lat: 35.6055588,
     lng: 139.6838682,
     zoom: 16,
     maxZoom: 18,
-    minZoom: 10,
-    restaurantsLocation: [
-      {lat: 35.6080668, lng: 139.6824988}
-    ]
+    minZoom: 10
   }),
-  
   created() {
     console.log("created", this.$route)
-    this.$vuetify.theme.dark = false
-    this.user = localStorage.get('user')
+    this.user = localStorage.get('user')["user"]["email"]
+    this.uid = localStorage.get('user')["user"]["uid"]
     this.$vuetify.theme.dark = false
   },
-
   mounted() {
     try {
       this.initMap()
     } catch (error) {
       console.error(error)
     }
-    console.log(this.user)
     console.log(device.type)
     if (this.whichTypeOfDevice()) {
       this.isMobile = true
@@ -556,15 +549,17 @@ export default {
           position: google.maps.ControlPosition.LEFT_BOTTOM
         }
       })
-      if (this.showRestaurants == true) {
-        var i
-        for (i in this.restaurantsLocation) {
-          this.restaurantsMarker = new google.maps.Marker({
-            position: {lat: this.restaurantsLocation[i]["lat"], lng: this.restaurantsLocation[i]["lng"]}
-          })
-          this.restaurantsMarker.setMap(this.map)
+      const pins = !localStorage.get("pins") ? [] : localStorage.get("pins")
+      pins.forEach( pin => {
+        if (pin.pinUser["user"]["uid"] == this.uid) {
+          if (this.selectedCategory.indexOf(pin.selectedCategory["0"]["text"]) >= 0) {
+            const marker = new google.maps.Marker({
+              position: {lat: Number(pin.latitude), lng: Number(pin.longitude)},
+              map: this.map
+            })
+          }
         }
-      }
+      })
     },
     whichTypeOfDevice() {
       var isMobile = null
@@ -580,9 +575,7 @@ export default {
     },
     signOut: function() {
       firebase.auth().signOut()
-      this.$router.replace('/')
-    },
-    push_ID:function() {
+      localStorage.set('user', null)
       this.$router.replace('/dev')
     },
     search: function() {
@@ -592,21 +585,12 @@ export default {
       this.$router.push({
         path: '/upload',
         query: {
-          id: this.user
+          //id: this.user
         }
       })
     },
     filter: function() {
       this.overlay = false
-      var i
-      for (i in this.selectedCategory) {
-        if (this.selectedCategory[i] == 'Restaurants') {
-          this.showRestaurants = true
-          break
-        } else {
-          this.showRestaurants = false
-        }
-      }
       this.initMap()
     }
   }
@@ -656,6 +640,4 @@ body {
 #create .v-btn--floating {
   position: relative;
 }
-
-
 </style>
